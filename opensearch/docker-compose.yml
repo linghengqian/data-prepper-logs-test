@@ -1,0 +1,32 @@
+services:
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.17.1
+    restart: always
+    environment:
+      discovery.type: single-node
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: opensearchNode1Test
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.17.1
+    restart: always
+    ports:
+      - "14321:5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200"]'
+    depends_on:
+      - opensearch-node1
+  data-prepper:
+    image: opensearchproject/data-prepper:2.10.1
+    restart: always
+    volumes:
+      - ./pipelines.yaml:/usr/share/data-prepper/pipelines/pipelines.yaml
+    depends_on:
+      - opensearch-node1
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.112.0
+    restart: always
+    volumes:
+      - ./otel-collector-config.yml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+      - data-prepper
+    ports:
+      - "24321:4318"
