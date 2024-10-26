@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: data-prepper-logs-test
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:demo_ds;MODE=MYSQL;IGNORECASE=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    username: sa
+    password:
